@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#6b3f22">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mahalle Fırını">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Mahalle Fırını 3D</title>
+<link rel="stylesheet" href="style.css?v=0.2.0">
+</head>
+<body>
+<div id="app">
+  <canvas id="c" aria-label="Mahalle Fırını oyun alanı"></canvas>
+
+  <div id="hud" class="hidden">
+    <div id="topbar">
+      <div class="chip" id="dayChip">1. gün · 06:00</div>
+      <div class="chip gold" id="moneyChip">200 ₺</div>
+      <div class="chip" id="carryChip" hidden></div>
+    </div>
+    <div id="toasts" aria-live="polite"></div>
+    <div id="prompt" class="hidden"><span id="promptIcon"></span><span id="promptText"></span><span id="promptKey">E</span></div>
+    <div id="ring" class="hidden"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" class="bg"/><circle id="ringFg" cx="22" cy="22" r="18" class="fg"/></svg></div>
+    <div id="cross"></div>
+    <div id="joy"><i></i></div>
+    <button id="actBtn" class="off" type="button" aria-label="Eylem"><span id="actIcon">✋</span></button>
+    <button id="camBtn" class="round" type="button" aria-label="Kamera">👁</button>
+    <button id="menuBtn" class="round" type="button" aria-label="Menü">☰</button>
+    <div id="ver" class="ver"></div>
+  </div>
+
+  <div id="title" class="screen">
+    <div class="titleBox">
+      <div class="kicker">MAHALLENİN FIRINCISI SENSİN</div>
+      <h1>Mahalle<br>Fırını</h1>
+      <p class="tagline">Ambardan unu al, hamuru elinle yoğur, somunu şekillendir, taş fırında pişir, mahalleliye sıcak ekmek sat.</p>
+      <div id="loadWrap"><div id="loadBar"><i></i></div><div id="loadText">Fırın yakılıyor…</div></div>
+      <button id="playBtn" class="big" disabled>OYNA</button>
+      <button id="newBtn" class="soft hidden" type="button">Yeni oyun</button>
+      <div class="ver" id="verTitle"></div>
+    </div>
+  </div>
+
+  <div id="help" class="screen hidden">
+    <div class="card">
+      <h2>Fırıncılık nasıl yapılır?</h2>
+      <ol>
+        <li><b>Ambar</b> (sol arka köşe): un çuvalı al. İlk sürümde un sınırsız.</li>
+        <li><b>Hamur teknesi</b> (sol duvar): unu dök, sonra <b>basılı tutarak yoğur</b>. Fareyi ya da parmağını oynatırsan daha hızlı yoğurursun.</li>
+        <li><b>Mermer tezgâh</b> (orta): hamura basılı tutarak somun şekli ver.</li>
+        <li><b>Taş fırın</b> (arka): somunu sür. Rengine bak: altın sarısı olunca çıkar. Geç kalırsan yanar.</li>
+        <li><b>Ekmek rafı</b> (sağ duvar): ekmekleri diz. Müşteri gelince raftan al, <b>tezgâhta</b> ver.</li>
+      </ol>
+      <p class="small"><b>Bilgisayar:</b> WASD yürü · fare/sürükle bak · E ya da Boşluk iş · basılı tut yoğur · V kamera · Esc menü.<br><b>Telefon:</b> sol yarıda parmakla yürü · sağ yarıda sürükle bak · sağ alttaki el düğmesi iş · 👁 kamera.</p>
+      <button id="helpOk" class="big">Başla</button>
+    </div>
+  </div>
+
+  <div id="menu" class="screen hidden">
+    <div class="card">
+      <h2>Duraklatıldı</h2>
+      <button id="resumeBtn" class="big">Oyuna dön</button>
+      <button id="helpBtn" class="soft">Nasıl oynanır</button>
+      <label class="row">Grafik <select id="qSel"><option value="auto">Otomatik</option><option value="low">Hafif</option><option value="medium">Orta</option><option value="high">Yüksek</option></select></label>
+      <label class="row">Ses <input id="volIn" type="range" min="0" max="1" step="0.05"></label>
+      <label class="row">Bakış hassasiyeti <input id="sensIn" type="range" min="0.3" max="2" step="0.05"></label>
+      <label class="row">Kamera <button id="camMode" class="soft small" type="button">Üçüncü şahıs</button></label>
+      <div class="row2"><button id="exportBtn" class="soft">📋 Kayıt kodunu kopyala</button><button id="importBtn" class="soft">📥 Koddan yükle</button></div>
+      <p class="small">Kayıt bu cihazın tarayıcısında tutulur; tarayıcı verisi silinirse gider. Ara sıra kayıt kodunu kopyalayıp sakla.</p>
+      <button id="installBtn" class="soft">📲 Uygulama olarak yükle</button>
+      <button id="titleBtn" class="soft">Ana menü</button>
+    </div>
+  </div>
+
+  <div id="dayend" class="screen hidden">
+    <div class="card">
+      <h2 id="deTitle">Günün sonu</h2>
+      <div id="deBody"></div>
+      <button id="deNext" class="big">Yeni güne başla</button>
+    </div>
+  </div>
+
+  <div id="install" class="screen hidden">
+    <div class="card">
+      <div class="logo">🍞</div>
+      <h2>Mahalle Fırını</h2>
+      <div id="installBody"></div>
+      <button id="instDo" class="big">📲 OYUNU YÜKLE</button>
+      <button id="instSkip" class="soft">🎮 YÜKLEMEDEN OYNA</button>
+    </div>
+  </div>
+</div>
+<script src="game.js?v=0.2.0"></script>
+</body>
+</html>
