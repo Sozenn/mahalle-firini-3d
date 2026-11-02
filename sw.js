@@ -1,6 +1,6 @@
 // Servis çalışanı: HTML/JS/CSS her zaman önce ağdan (güncel sürüm), çevrimdışıyken önbellekten; model/doku/simgeler önbellek öncelikli.
-const CACHE = 'mahalle-firini-3d-0.3.0';
-const FILES = ["./game.js","./icons/icon-192.png","./icons/icon-512.png","./index.html","./manifest.webmanifest","./models/baker.glb","./models/man.glb","./models/man_heavy.glb","./models/man_old.glb","./models/woman.glb","./models/woman_old.glb","./style.css"];
+const CACHE = 'mahalle-firini-3d-0.4.0';
+const FILES = ["./game.js","./icons/icon-192.png","./icons/icon-512.png","./index.html","./manifest.webmanifest","./style.css"];
 const HEAVY = /\.(jpg|jpeg|png|webp|glb|ogg|mp3)$/i;
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => Promise.all(FILES.map((f) => fetch(new Request(f, { cache: 'reload' })).then((r) => (r.ok ? c.put(f, r) : null)).catch(() => null)))).then(() => self.skipWaiting()));
